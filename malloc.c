@@ -9,7 +9,12 @@
 
 void *malloc(size_t size)
 {
-    if (size == 0)
+    void *adress;
+
+    if (size <= 0)
         return NULL;
-    return NULL;
+    adress = sbrk(size);
+    if (adress == (void *) -1)
+        return NULL;
+    return adress;
 }
