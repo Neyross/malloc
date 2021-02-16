@@ -11,12 +11,11 @@
 #include <unistd.h>
 #include <stdbool.h>
 
-typedef struct chunk chunk;
+#define align2(x) (x / 2 * 2)
 
-struct chunk {
-    chunk *next;
-    chunk *prev;
-    void *adress;
+typedef struct chunk_s chunk_t;
+struct chunk_s {
+    chunk_t *next;
     size_t size;
     bool free;
 };
