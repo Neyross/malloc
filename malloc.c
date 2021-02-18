@@ -83,5 +83,5 @@ void *malloc(size_t size)
             append(mem);
 
 
-
+    return mem->to_use;
 }
