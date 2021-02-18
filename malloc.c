@@ -15,10 +15,10 @@ chunk_t *best_fit(size_t size, chunk_t *last)
 
     if (!head)
         return NULL;
-    while (base && base->free == false && base->size < size)
-    {
-        last = base;
+    while (base->free == false || base->size <= size){
         base = base->next;
+        if (base == head)
+            return NULL;
     }
     return base;
 }
@@ -69,8 +69,11 @@ void append(chunk_t *chunk)
     if (!head)
         head = chunk;
     base = head;
-    while (base->next != 0)
+    while (base->next != 0) {
         base = base->next;
+        if (base == head)
+            break;
+    }
     chunk->prev = base->prev;
     chunk->next = base;
     base->prev = chunk;
