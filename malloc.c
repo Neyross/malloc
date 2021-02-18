@@ -13,6 +13,8 @@ chunk_t *best_fit(size_t size, chunk_t *last)
 {
     chunk_t *base = head;
 
+    if (!head)
+        return NULL;
     while (base && base->free == false && base->size < size)
     {
         last = base;
@@ -39,7 +41,7 @@ chunk_t *new_alloc(size_t size)
     ptr = sbrk(size);
     if (ptr == (void *)-1)
         return NULL;
-    new = (chunk_t *)ptr;
+    new = ptr;
     new->size = size - sizeof(chunk_t);
     new->to_use = ptr + sizeof(chunk_t);
     new->free = true;
@@ -76,11 +78,11 @@ void append(chunk_t *chunk)
 
     if (!head)
         head = chunk;
-    while (base < chunk)
+    while (base->next != NULL)
         base = base->next;
-    chunk->next = base;
     chunk->prev = base->prev;
-    base->prev->next = chunk;
+    chunk->next = base;
+    base->prev->next = NULL;
     base->prev = chunk;
 }
 
@@ -92,7 +94,7 @@ void *malloc(size_t size)
         return NULL;
     mem = best_fit(size, mem);
     if (!mem)
-        mem = new_alloc(block_size(size));
+        mem = new_alloc(size + sizeof(chunk_t));
     if (!mem)
         return NULL;
     else
