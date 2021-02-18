@@ -12,12 +12,15 @@
 #include <stdbool.h>
 
 #define align2(x) (x / 2 * 2)
+#define page_size(void) (getpagesize() * 2)
 
 typedef struct chunk_s chunk_t;
 struct chunk_s {
     chunk_t *next;
+    chunk_t *prev;
     size_t size;
     bool free;
+    void *to_use;
 };
 
 void *malloc(size_t size);
