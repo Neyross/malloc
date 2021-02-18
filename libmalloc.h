@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <stdbool.h>
 
-#define align2(x) (x / 2 * 2)
+#define align2(x) ((x + 1) / 2 * 2)
 #define page_size(void) (getpagesize() * 2)
 
 typedef struct chunk_s chunk_t;

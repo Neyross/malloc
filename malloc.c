@@ -37,9 +37,9 @@ chunk_t *new_alloc(size_t size)
     void *ptr;
 
     ptr = sbrk(size);
-    if (ptr == (void*) - 1)
+    if (ptr == (void *)-1)
         return NULL;
-    new = (chunk_t*) ptr;
+    new = (chunk_t *)ptr;
     new->size = size - sizeof(chunk_t);
     new->to_use = ptr + sizeof(chunk_t);
     new->free = true;
@@ -48,9 +48,26 @@ chunk_t *new_alloc(size_t size)
     return new;
 }
 
-void split(chunk_t *first, size_t size)
+void split(chunk_t *chunk, size_t size)
 {
+    chunk_t *new;
+    void *ptr;
 
+    if (chunk->size - size <= sizeof(chunk_t))
+        return;
+    if (chunk->size == size)
+        return;
+    ptr = (void *)chunk + size + sizeof(chunk_t);
+    new = ptr;
+    new->size = chunk->size - sizeof(chunk_t) - size;
+    new->to_use = ptr + sizeof(chunk_t);
+    new->prev = chunk;
+    new->next = chunk->next;
+    new->free = true;
+    chunk->prev->next = new;
+    chunk->size = size;
+    chunk->next = new;
+    chunk->free = true;
 }
 
 void append(chunk_t *chunk)
@@ -69,19 +86,24 @@ void append(chunk_t *chunk)
 
 void *malloc(size_t size)
 {
-    chunk_t *mem;
+    chunk_t *mem = NULL;
 
     if (size <= 0)
         return NULL;
-    size = block_size(size);
     mem = best_fit(size, mem);
     if (!mem)
-        mem = new_alloc(size);
-        if (!mem)
-            return NULL;
-        else
-            append(mem);
-
-
+        mem = new_alloc(block_size(size));
+    if (!mem)
+        return NULL;
+    else
+    {
+        append(mem);
+        split (mem, size);
+        mem->free = false;
+        return mem->to_use;
+    }
+    if (mem->size > size)
+        split(mem, size);
+    mem->free = false;
     return mem->to_use;
 }
