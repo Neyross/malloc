@@ -10,9 +10,7 @@
 
 #include <unistd.h>
 #include <stdbool.h>
-
-#define align2(x) ((x + 1) / 2 * 2)
-#define page_size(void) (getpagesize() * 2)
+#include <stdio.h>
 
 typedef struct chunk_s chunk_t;
 struct chunk_s {
@@ -28,5 +26,7 @@ void free(void *ptr);
 void *calloc(size_t nmemb, size_t size);
 void *realloc(void *ptr, size_t size);
 void *reallocarray(void *ptr, size_t nmemb, size_t size);
+void my_put_nbr(size_t nb);
+void my_putchar (char c);
 
 #endif /* !LIBMALLOC_H_ */

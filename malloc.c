@@ -23,16 +23,6 @@ chunk_t *best_fit(size_t size, chunk_t *last)
     return base;
 }
 
-size_t block_size(size_t size)
-{
-    int i = 1;
-
-    size = size + sizeof(chunk_t);
-    for (; size % page_size() > size; size %= page_size(), i++)
-        ;
-    return align2(i * page_size());
-}
-
 chunk_t *new_alloc(size_t size)
 {
     chunk_t *new;
@@ -74,16 +64,17 @@ void split(chunk_t *chunk, size_t size)
 
 void append(chunk_t *chunk)
 {
-    chunk_t *base = head;
+    chunk_t *base;
 
     if (!head)
         head = chunk;
-    while (base->next != NULL)
+    base = head;
+    while (base->next != 0)
         base = base->next;
     chunk->prev = base->prev;
     chunk->next = base;
-    base->prev->next = NULL;
     base->prev = chunk;
+    base->prev->next = chunk;
 }
 
 void *malloc(size_t size)
@@ -100,7 +91,7 @@ void *malloc(size_t size)
     else
     {
         append(mem);
-        split (mem, size);
+        split(mem, size);
         mem->free = false;
         return mem->to_use;
     }
