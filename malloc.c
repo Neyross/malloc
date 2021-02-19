@@ -80,6 +80,16 @@ void append(chunk_t *chunk)
     base->prev->next = chunk;
 }
 
+size_t block_size(size_t size)
+{
+    int i = 1;
+
+    size = size + sizeof(chunk_t);
+    for (; size % page_size() > size; size %= page_size(), i++)
+        ;
+    return align2(i * page_size());
+}
+
 void *malloc(size_t size)
 {
     chunk_t *mem = NULL;
@@ -88,7 +98,7 @@ void *malloc(size_t size)
         return NULL;
     mem = best_fit(size, mem);
     if (!mem)
-        mem = new_alloc(size + sizeof(chunk_t));
+        mem = new_alloc(block_size(size));
     if (!mem)
         return NULL;
     else
