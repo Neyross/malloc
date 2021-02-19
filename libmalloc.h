@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #define align2(x) ((x + 1) / 2 * 2)
 #define page_size(void) (getpagesize() * 2)
@@ -32,5 +33,6 @@ void *realloc(void *ptr, size_t size);
 void *reallocarray(void *ptr, size_t nmemb, size_t size);
 void my_put_nbr(size_t nb);
 void my_putchar (char c);
+void split(chunk_t *chunk, size_t size);
 
 #endif /* !LIBMALLOC_H_ */

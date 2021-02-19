@@ -42,28 +42,6 @@ chunk_t *new_alloc(size_t size)
     return new;
 }
 
-void split(chunk_t *chunk, size_t size)
-{
-    chunk_t *new;
-    void *ptr;
-
-    if (chunk->size - size <= sizeof(chunk_t))
-        return;
-    if (chunk->size == size)
-        return;
-    ptr = (void *)chunk + size + sizeof(chunk_t);
-    new = ptr;
-    new->size = chunk->size - sizeof(chunk_t) - size;
-    new->to_use = ptr + sizeof(chunk_t);
-    new->prev = chunk;
-    new->next = chunk->next;
-    new->free = true;
-    chunk->prev->next = new;
-    chunk->size = size;
-    chunk->next = new;
-    chunk->free = true;
-}
-
 void append(chunk_t *chunk)
 {
     chunk_t *base;
@@ -89,7 +67,7 @@ size_t block_size(size_t size)
 
     size = size + sizeof(chunk_t);
     i = i + size / page_size();
-    return page_size()* i;
+    return page_size() * i;
 }
 
 void *malloc(size_t size)

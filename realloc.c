@@ -7,6 +7,8 @@
 
 #include "libmalloc.h"
 
+extern chunk_t *head;
+
 void *reallocarray(void *ptr, size_t nmemb, size_t size)
 {
 }
