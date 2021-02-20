@@ -7,7 +7,7 @@
 
 #include "libmalloc.h"
 
-chunk_t *head = NULL;
+chunk_t *head;
 
 chunk_t *best_fit(size_t size, chunk_t *last)
 {
@@ -86,7 +86,6 @@ void *malloc(size_t size)
         {
             append(mem);
             split(mem, size);
-            mem->free = false;
             return mem->to_use;
         }
     }

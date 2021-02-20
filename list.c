@@ -26,5 +26,5 @@ void split(chunk_t *chunk, size_t size)
     chunk->prev->next = new;
     chunk->size = size;
     chunk->next = new;
-    chunk->free = true;
+    chunk->free = false;
 }
