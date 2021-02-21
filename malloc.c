@@ -82,8 +82,7 @@ void *malloc(size_t size)
         mem = new_alloc(block_size(size));
         if (!mem)
             return NULL;
-        else
-        {
+        else {
             append(mem);
             split(mem, size);
             return mem->to_use;
